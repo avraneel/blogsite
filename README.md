@@ -8,6 +8,7 @@ The routes are as follows:
 | -------- | ------------------------- | -------------------------------------------- |
 | `GET`    | `/users`                  | Return a list of all users                   |
 | `POST`   | `/users`                  | Create a user                                |
+| `GET`    | `/users/:userId`          | Return the details of user with id `userId`  |
 | `GET`    | `/posts`                  | Read all posts                               |
 | `GET`    | `/posts/:postId`          | Read post with id `postId`                   |
 | `GET`    | `/comments`               | Read all comments                            |
