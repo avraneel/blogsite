@@ -1,6 +1,7 @@
 import express from "express";
 import usersRouter from "./users/users.routes.js";
-import { getAllposts, getPost } from "./posts/allposts.controller.js";
+import postsRouter from "./posts/posts.routes.js";
+import commentsRouter from "./comments/comments.route.js";
 
 const app = express();
 
@@ -8,7 +9,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/users", usersRouter);
-app.get("/posts", getAllposts);
+app.use("/posts", postsRouter);
+app.use("/comments", commentsRouter);
 
 app.listen(3000, () => {
   console.log("Listening on port 3000...");

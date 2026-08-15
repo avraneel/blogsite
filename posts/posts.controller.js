@@ -1,14 +1,21 @@
 import prisma from "../prisma.client.js";
 
+export async function getPosts(req, res) {
+  const { userId } = req.query;
+  const where = {};
+  if (userId) where.authorId = Number(userId);
+  const posts = await prisma.post.findMany({ where });
+  res.send(posts);
+}
+
 export async function createPost(req, res) {
   await prisma.post.create({
     data: {
       title: req.body.title,
       content: req.body.content,
-      createdAt: new Date(),
       author: {
         connect: {
-          id: Number(req.params.userId),
+          id: Number(req.body.userId),
         },
       },
       published: false,
@@ -17,10 +24,10 @@ export async function createPost(req, res) {
   res.send("Post created!");
 }
 
-export async function getAllPostsByUserId(req, res) {
-  const posts = await prisma.post.findMany({
+export async function getPost(req, res) {
+  const posts = await prisma.post.findUnique({
     where: {
-      authorId: Number(req.params.userId),
+      id: req.params.id,
     },
   });
   res.send(posts);
