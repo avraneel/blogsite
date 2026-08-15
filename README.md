@@ -26,3 +26,17 @@ The routes are as follows:
 ## How will the users authenticate:
 
 In post request, send the email, fullname and password in the body
+
+### CRUD Status
+
+## Users
+
+Create - done
+Read - done
+Update - TBD
+Delete - done
+
+## Posts
+
+Create - done
+Delete - done

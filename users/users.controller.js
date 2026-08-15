@@ -38,6 +38,25 @@ export async function authenticateUser(req, res) {
   });
 }
 
+export async function deleteUser(req, res) {
+  try {
+    const deletedPosts = await prisma.post.deleteMany({
+      where: {
+        authorId: Number(req.params.userId),
+      },
+    });
+    const user = await prisma.user.delete({
+      where: {
+        id: Number(req.params.userId),
+      },
+    });
+    res.send({ posts: deletedPosts, user });
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(404);
+  }
+}
+
 export async function verifyToken(req, res, next) {
   const authorizationHeader = req.get("Authorization");
   if (authorizationHeader) {
