@@ -34,13 +34,22 @@ export async function getComment(req, res) {
       id: Number(req.params.commentId),
     },
   });
-  res.send(comment);
+  if (comment) {
+    res.send(comment);
+  } else {
+    res.sendStatus(404);
+  }
 }
 
 export async function deleteComment(req, res) {
   try {
-    const comment = await prisma.delete({
-      id: req.params.commentId,
+    const comment = await prisma.comment.delete({
+      where: {
+        id: Number(req.params.commentId),
+      },
     });
-  } catch (error) {}
+    res.send(comment);
+  } catch (error) {
+    res.sendStatus(404);
+  }
 }
