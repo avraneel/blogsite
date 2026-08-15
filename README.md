@@ -7,6 +7,8 @@ The routes are as follows:
 | Method   | Route                                | Description                                  | Authorization             | Status |
 | -------- | ------------------------------------ | -------------------------------------------- | ------------------------- | ------ |
 | `GET`    | `/users`                             | Return a list of all users                   |                           | Done   |
+| `POST`   | `/users/register`                    | Create a user                                |                           | Done   |
+| `POST`   | `/users/login`                       | Authenticate a user                          |                           |        |
 | `POST`   | `/users`                             | Create a user                                |                           | Done   |
 | `GET`    | `/users/:userId`                     | Return the details of user with id `userId`  |                           | Done   |
 | `GET`    | `/posts`                             | Read all posts                               | published ones are public |        |
