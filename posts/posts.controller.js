@@ -38,15 +38,12 @@ export async function getPost(req, res) {
 
 export async function deletePost(req, res) {
   const { id, ...details } = req.user;
-  const authorId = prisma.post.findUnique({
+  const author = prisma.post.findUnique({
     where: {
       id: Number(req.params.postId),
     },
-    select: {
-      authorId: true,
-    },
   });
-  if (id !== authorId) {
+  if (!author || id !== author.authorId) {
     return res
       .status(403)
       .json({ message: "You cannot delete someone else's post!" });

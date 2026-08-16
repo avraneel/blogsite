@@ -1,4 +1,5 @@
 import "dotenv/config";
+import bcrypt, { hash } from "bcryptjs";
 import jwt from "jsonwebtoken";
 import prisma from "../prisma.client.js";
 
@@ -8,12 +9,13 @@ export async function getUsers(req, res) {
 }
 
 export async function createUser(req, res) {
+  const hashedPassword = bcrypt.hash(req.body.password, 10);
   try {
     await prisma.user.create({
       data: {
         email: req.body.email,
         fullname: req.body.fullname,
-        password: req.body.password,
+        password: hashedPassword,
       },
     });
     res.sendStatus(201);

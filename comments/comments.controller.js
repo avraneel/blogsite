@@ -42,7 +42,7 @@ export async function getComment(req, res) {
 
 export async function deleteComment(req, res) {
   const { id, ...details } = req.user;
-  const authorId = prisma.comment.findUnique({
+  const author = await prisma.comment.findUnique({
     where: {
       id: Number(req.params.commentId),
     },
@@ -50,7 +50,7 @@ export async function deleteComment(req, res) {
       authorId: true,
     },
   });
-  if (id !== authorId) {
+  if (!author || id !== author.authorId) {
     return res
       .status(403)
       .json({ message: "You cannot delete someone else's comment!" });
