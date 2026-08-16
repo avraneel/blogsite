@@ -1,69 +1,54 @@
-import prisma from "../prisma.client.js";
+import "dotenv/config";
 import jwt from "jsonwebtoken";
+import prisma from "../prisma.client.js";
 
-export async function displayUsers(req, res) {
+export async function getUsers(req, res) {
   const users = await prisma.user.findMany();
-  res.send(users);
+  res.json(users);
 }
 
 export async function createUser(req, res) {
-  await prisma.user.create({
-    data: {
-      email: req.body.email,
-      fullname: req.body.fullname,
-      password: req.body.password,
-    },
-  });
-  res.end();
+  try {
+    await prisma.user.create({
+      data: {
+        email: req.body.email,
+        fullname: req.body.fullname,
+        password: req.body.password,
+      },
+    });
+    res.sendStatus(201);
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
 }
 
-export async function getOneUser(req, res) {
+export async function getUser(req, res) {
   const user = await prisma.user.findUnique({
     where: {
       id: Number(req.params.userId),
     },
   });
-  res.send(user);
-}
-
-export async function authenticateUser(req, res) {
-  const user = await prisma.user.findUnique({
-    where: {
-      email: req.body.email,
-    },
-  });
-  console.log(user);
-  jwt.sign(user, "private", (err, token) => {
-    res.json(token);
-  });
+  res.json(user);
 }
 
 export async function deleteUser(req, res) {
+  const { id, ...details } = req.user;
+  if (id !== req.params.userId) {
+    return res.status(403).json({
+      message: "You are not allowed to remove someone else's account!",
+    });
+  }
   try {
     const deletedPosts = await prisma.post.deleteMany({
       where: {
-        authorId: Number(req.params.userId),
+        authorId: id,
       },
     });
     const user = await prisma.user.delete({
-      where: {
-        id: Number(req.params.userId),
-      },
+      where: { id },
     });
-    res.send({ posts: deletedPosts, user });
+    res.json({ posts: deletedPosts, user });
   } catch (error) {
-    console.log(error);
     res.sendStatus(404);
-  }
-}
-
-export async function verifyToken(req, res, next) {
-  const authorizationHeader = req.get("Authorization");
-  if (authorizationHeader) {
-    const token = authorizationHeader.split(" ")[1];
-    console.log(token);
-    next();
-  } else {
-    res.sendStatus(401);
   }
 }

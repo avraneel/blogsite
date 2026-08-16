@@ -5,35 +5,52 @@ export async function getPosts(req, res) {
   const where = {};
   if (userId) where.authorId = Number(userId);
   const posts = await prisma.post.findMany({ where });
-  res.send(posts);
+  res.json(posts);
 }
 
 export async function createPost(req, res) {
-  await prisma.post.create({
-    data: {
-      title: req.body.title,
-      content: req.body.content,
-      author: {
-        connect: {
-          id: Number(req.body.userId),
+  const { id, ...details } = req.user;
+  try {
+    await prisma.post.create({
+      data: {
+        title: req.body.title,
+        content: req.body.content,
+        author: {
+          connect: { id },
         },
+        published: false,
       },
-      published: false,
-    },
-  });
-  res.send("Post created!");
+    });
+    res.sendStatus(201);
+  } catch (err) {
+    res.status(400).json(error.message);
+  }
 }
 
 export async function getPost(req, res) {
-  const posts = await prisma.post.findUnique({
+  const post = await prisma.post.findUnique({
     where: {
       id: req.params.id,
     },
   });
-  res.send(posts);
+  res.json(post);
 }
 
 export async function deletePost(req, res) {
+  const { id, ...details } = req.user;
+  const authorId = prisma.post.findUnique({
+    where: {
+      id: Number(req.params.postId),
+    },
+    select: {
+      authorId: true,
+    },
+  });
+  if (id !== authorId) {
+    return res
+      .status(403)
+      .json({ message: "You cannot delete someone else's post!" });
+  }
   try {
     const deletedComments = await prisma.comment.deleteMany({
       where: {
@@ -45,7 +62,7 @@ export async function deletePost(req, res) {
         id: Number(req.params.postId),
       },
     });
-    res.send(post);
+    res.json(post);
   } catch (error) {
     res.sendStatus(404);
   }

@@ -5,13 +5,14 @@ import {
   getPosts,
   getPost,
 } from "./posts.controller.js";
+import { verifyToken } from "../auth/auth.middleware.js";
 
 const router = Router({ mergeParams: true });
 
 router.get("/", getPosts);
-router.post("/", createPost);
+router.post("/", verifyToken, createPost);
 
 router.get("/:postId", getPost);
-router.delete("/:postId", deletePost);
+router.delete("/:postId", verifyToken, deletePost);
 
 export default router;

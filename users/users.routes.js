@@ -1,24 +1,20 @@
 import { Router } from "express";
 import {
-  authenticateUser,
   createUser,
-  displayUsers,
-  getOneUser,
-  verifyToken,
+  getUsers,
+  getUser,
   deleteUser,
 } from "./users.controller.js";
 import postsRouter from "../posts/posts.routes.js";
+import { verifyToken } from "../auth/auth.middleware.js";
 
 const router = Router();
 
-router.use("/:userId/posts", postsRouter);
+router.get("/", getUsers);
+router.get("/:userId", getUser);
 
-router.get("/", verifyToken, displayUsers);
-router.get("/:userId", getOneUser);
+router.post("/", createUser);
 
-router.post("/register", createUser);
-router.post("/login", authenticateUser);
-
-router.delete("/:userId", deleteUser);
+router.delete("/:userId", verifyToken, deleteUser);
 
 export default router;

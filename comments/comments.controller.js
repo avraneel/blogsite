@@ -6,17 +6,16 @@ export async function getComments(req, res) {
   if (userId) where.authorId = Number(userId);
   if (postId) where.postId = Number(postId);
   const comments = await prisma.comment.findMany({ where });
-  res.send(comments);
+  res.json(comments);
 }
 
 export async function createComment(req, res) {
+  const { id, ...details } = req.user;
   await prisma.comment.create({
     data: {
       content: req.body.content,
       author: {
-        connect: {
-          id: Number(req.body.userId),
-        },
+        connect: { id },
       },
       post: {
         connect: {
@@ -25,7 +24,7 @@ export async function createComment(req, res) {
       },
     },
   });
-  res.send("comment created!");
+  res.sendStatus(201);
 }
 
 export async function getComment(req, res) {
@@ -35,20 +34,34 @@ export async function getComment(req, res) {
     },
   });
   if (comment) {
-    res.send(comment);
+    res.json(comment);
   } else {
     res.sendStatus(404);
   }
 }
 
 export async function deleteComment(req, res) {
+  const { id, ...details } = req.user;
+  const authorId = prisma.comment.findUnique({
+    where: {
+      id: Number(req.params.commentId),
+    },
+    select: {
+      authorId: true,
+    },
+  });
+  if (id !== authorId) {
+    return res
+      .status(403)
+      .json({ message: "You cannot delete someone else's comment!" });
+  }
   try {
     const comment = await prisma.comment.delete({
       where: {
         id: Number(req.params.commentId),
       },
     });
-    res.send(comment);
+    res.json(comment);
   } catch (error) {
     res.sendStatus(404);
   }
