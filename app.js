@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import usersRouter from "./users/users.routes.js";
 import postsRouter from "./posts/posts.routes.js";
 import commentsRouter from "./comments/comments.route.js";
@@ -6,6 +7,7 @@ import authRouter from "./auth/auth.routes.js";
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
