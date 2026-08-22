@@ -17,6 +17,7 @@ async function authenticateUser(req, res) {
   }
   jwt.sign(user, process.env.JWT_SECRET, (err, token) => {
     console.log(token);
+    res.append("Set-Cookie", `jwt=${token}`);
     res.json({ token: token });
   });
 }
