@@ -23,14 +23,14 @@ export async function createPost(req, res) {
     });
     res.sendStatus(201);
   } catch (err) {
-    res.status(400).json(error.message);
+    res.status(400).json(err.message);
   }
 }
 
 export async function getPost(req, res) {
   const post = await prisma.post.findUnique({
     where: {
-      id: req.params.id,
+      id: Number(req.params.postId),
     },
   });
   res.json(post);
