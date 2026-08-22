@@ -24,7 +24,7 @@ export async function createComment(req, res) {
       },
     },
   });
-  res.sendStatus(201);
+  res.status(201).json({ message: "Comment Created" });
 }
 
 export async function getComment(req, res) {

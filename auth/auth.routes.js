@@ -16,7 +16,6 @@ async function authenticateUser(req, res) {
     res.status(404).json({ message: "email does not exist" });
   }
   jwt.sign(user, process.env.JWT_SECRET, (err, token) => {
-    console.log(token);
     res.json({ token: token });
   });
 }
