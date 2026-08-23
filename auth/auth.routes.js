@@ -13,10 +13,10 @@ async function authenticateUser(req, res) {
     },
   });
   if (!user) {
-    res.status(404).json({ message: "email does not exist" });
+    res.status(400).json({ message: "email does not exist" });
   }
   jwt.sign(user, process.env.JWT_SECRET, (err, token) => {
-    res.json({ token: token });
+    res.status(200).json({ token: token, user });
   });
 }
 
