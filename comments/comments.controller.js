@@ -5,7 +5,21 @@ export async function getComments(req, res) {
   const where = {};
   if (userId) where.authorId = Number(userId);
   if (postId) where.postId = Number(postId);
-  const comments = await prisma.comment.findMany({ where });
+  const comments = await prisma.comment.findMany({
+    where,
+    select: {
+      id: true,
+      content: true,
+      createdAt: true,
+      author: {
+        select: {
+          id: true,
+          fullname: true,
+          password: false,
+        },
+      },
+    },
+  });
   res.json(comments);
 }
 
