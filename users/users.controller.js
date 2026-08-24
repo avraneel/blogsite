@@ -18,7 +18,7 @@ export async function createUser(req, res) {
         password: hashedPassword,
       },
     });
-    res.sendStatus(201);
+    res.status(201).json({ message: "User created successfully" });
   } catch (error) {
     res.status(400).json(error.message);
   }
