@@ -21,7 +21,7 @@ export async function createPost(req, res) {
         published: false,
       },
     });
-    res.sendStatus(201);
+    res.status(201).json({ message: "Created" });
   } catch (err) {
     res.status(400).json(err.message);
   }
