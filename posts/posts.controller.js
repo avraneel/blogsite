@@ -36,6 +36,23 @@ export async function getPost(req, res) {
   res.json(post);
 }
 
+export async function updatePublish(req, res) {
+  console.group(Number(req.params.postId));
+  try {
+    await prisma.post.update({
+      where: {
+        id: Number(req.params.postId),
+      },
+      data: {
+        published: Boolean(req.body.published),
+      },
+    });
+    res.status(200).json({ message: "updated" });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+}
+
 export async function deletePost(req, res) {
   const { id, ...details } = req.user;
   const author = prisma.post.findUnique({
