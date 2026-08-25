@@ -4,7 +4,15 @@ export async function getPosts(req, res) {
   const { userId } = req.query;
   const where = {};
   if (userId) where.authorId = Number(userId);
-  const posts = await prisma.post.findMany({ where });
+  const posts = await prisma.post.findMany({
+    where,
+    orderBy: [
+      {
+        createdAt: "desc",
+      },
+    ],
+  });
+  console.log(posts);
   res.json(posts);
 }
 
@@ -37,14 +45,14 @@ export async function getPost(req, res) {
 }
 
 export async function updatePublish(req, res) {
-  console.group(Number(req.params.postId));
+  const published = req.body.published === "false" ? false : true;
   try {
     await prisma.post.update({
       where: {
         id: Number(req.params.postId),
       },
       data: {
-        published: Boolean(req.body.published),
+        published: published,
       },
     });
     res.status(200).json({ message: "updated" });
