@@ -12,7 +12,6 @@ export async function getPosts(req, res) {
       },
     ],
   });
-  console.log(posts);
   res.json(posts);
 }
 
