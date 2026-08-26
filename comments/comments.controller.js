@@ -57,8 +57,38 @@ export async function getComment(req, res) {
   }
 }
 
+export async function updateComment(req, res) {
+  const { id } = req.user;
+  const comment = await prisma.comment.findUnique({
+    where: {
+      id: Number(req.params.commentId),
+    },
+    select: {
+      authorId: true,
+    },
+  });
+  if (!comment || id !== comment.authorId) {
+    return res
+      .status(403)
+      .json({ message: "You cannot edit someone else's comment!" });
+  }
+  try {
+    await prisma.comment.update({
+      where: {
+        id: Number(req.params.commentId),
+      },
+      data: {
+        content: req.body.content,
+      },
+    });
+    res.status(200).json({ message: "updated" });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+}
+
 export async function deleteComment(req, res) {
-  const { id, ...details } = req.user;
+  const { id } = req.user;
   const author = await prisma.comment.findUnique({
     where: {
       id: Number(req.params.commentId),
