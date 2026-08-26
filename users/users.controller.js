@@ -34,7 +34,7 @@ export async function getUser(req, res) {
 }
 
 export async function deleteUser(req, res) {
-  const { id, ...details } = req.user;
+  const { id } = req.user;
   if (id !== req.params.userId) {
     return res.status(403).json({
       message: "You are not allowed to remove someone else's account!",

@@ -52,9 +52,10 @@ export async function updatePost(req, res) {
     },
   });
   if (!post || id !== post.authorId) {
-    return res
-      .status(403)
-      .json({ message: "403 Forbidden. You cannot edit someone else's post!" });
+    return res.status(403).json({
+      message:
+        "403 Forbidden. You are not an admin and you cannot edit someone else's post!",
+    });
   }
   try {
     await prisma.post.update({
@@ -75,12 +76,12 @@ export async function updatePost(req, res) {
 
 export async function deletePost(req, res) {
   const { id } = req.user;
-  const author = prisma.post.findUnique({
+  const post = prisma.post.findUnique({
     where: {
       id: Number(req.params.postId),
     },
   });
-  if (!author || id !== author.authorId) {
+  if (!post || id !== post.authorId) {
     return res
       .status(403)
       .json({ message: "You cannot delete someone else's post!" });
