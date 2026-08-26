@@ -1,9 +1,10 @@
 import prisma from "../prisma.client.js";
 
 export async function getPosts(req, res) {
-  const { userId } = req.query;
+  const { userId, published } = req.query;
   const where = {};
   if (userId) where.authorId = Number(userId);
+  if (published) where.published = published === "false" ? false : true;
   const posts = await prisma.post.findMany({
     where,
     orderBy: [
@@ -16,7 +17,7 @@ export async function getPosts(req, res) {
 }
 
 export async function createPost(req, res) {
-  const { id, ...details } = req.user;
+  const { id } = req.user;
   try {
     await prisma.post.create({
       data: {

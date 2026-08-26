@@ -6,11 +6,11 @@ import {
   getPost,
   updatePublish,
 } from "./posts.controller.js";
-import { verifyToken } from "../auth/auth.middleware.js";
+import { authorizeGetPosts, verifyToken } from "../auth/auth.middleware.js";
 
 const router = Router({ mergeParams: true });
 
-router.get("/", getPosts);
+router.get("/", authorizeGetPosts, getPosts);
 router.post("/", verifyToken, createPost);
 
 router.get("/:postId", getPost);

@@ -8,15 +8,25 @@ export async function verifyToken(req, res, next) {
   if (!token) {
     return res
       .status(401)
-      .json({ message: "Unauthorized. Token not sent in header" });
+      .json({ message: "401 Unauthorized. Token not sent in header" });
   }
 
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
-      res.status(403).json({ message: "Forbidden. Token sent is invalid" });
+      res.status(403).json({ message: "403 Forbidden. Token sent is invalid" });
     }
     // only now are you allowed to proceed to the next middleware
     req.user = decoded;
     next();
   });
+}
+
+export async function authorizeGetPosts(req, res, next) {
+  const { published } = req.query;
+  if (published === "true") {
+    next();
+  } else {
+    // next contains the getPosts function so we can pass it
+    verifyToken(req, res, next);
+  }
 }
