@@ -76,7 +76,7 @@ export async function updatePost(req, res) {
 
 export async function deletePost(req, res) {
   const { id } = req.user;
-  const post = prisma.post.findUnique({
+  const post = await prisma.post.findUnique({
     where: {
       id: Number(req.params.postId),
     },
